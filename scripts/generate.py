@@ -8,6 +8,8 @@
 #Modified By: Ryan Gargett                       #
 ##################################################
 
+# TODO add file reading for batch processing prompts
+
 from bark import SAMPLE_RATE, generate_audio
 from bark.generation import generate_text_semantic
 from bark.api import semantic_to_waveform
