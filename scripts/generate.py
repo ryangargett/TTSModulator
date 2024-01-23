@@ -69,7 +69,7 @@ def generate(prompt):
     
     processed_audio = process_audio(audio)
     
-    write("output.wav", SAMPLE_RATE, processed_audio)
+    write("output/generated.wav", SAMPLE_RATE, processed_audio)
 
 if __name__ == "__main__":
     
