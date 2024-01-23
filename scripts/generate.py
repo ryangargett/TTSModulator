@@ -22,8 +22,28 @@ import nltk
 import utils.config as cfg
 
 def _get_sentences(prompt):
-    pass
+    #nltk.download('punkt') # uncomment for first-time use
     
+    sentences = nltk.sent_tokenize(prompt)
+    return sentences
+
+def collate_audio(sentences):
+    
+    padding = np.zeros(int(cfg.PADDING_LENGTH * SAMPLE_RATE))
+    fragments = []
+    
+    for sentence in sentences:
+        semantic_tokens = generate_text_semantic(sentence,
+                                                 history_prompt=cfg.VOICE_PRESET,
+                                                 temp=cfg.SEMANTIC_TEMP,
+                                                 min_eos_p=cfg.MIN_EOS_P)
+        
+        audio = semantic_to_waveform(semantic_tokens, history_prompt=cfg.VOICE_PRESET)
+        fragments += [audio, padding.copy()]
+
+    audio_collated = np.concatenate(fragments).astype(np.float32)
+    return audio_collated
+
 
 def process_audio(audio):
     
@@ -39,7 +59,14 @@ def process_audio(audio):
     return processed_audio         
 
 def generate(prompt):
-    audio = generate_audio(prompt, history_prompt=cfg.VOICE_PRESET)
+    
+    sentences = _get_sentences(prompt)
+    
+    if len(sentences) > cfg.MIN_SENTENCES:
+        audio = collate_audio(sentences)
+    else:
+        audio = generate_audio(prompt, history_prompt=cfg.VOICE_PRESET)
+    
     processed_audio = process_audio(audio)
     
     write("output.wav", SAMPLE_RATE, processed_audio)
@@ -47,7 +74,7 @@ def generate(prompt):
 if __name__ == "__main__":
     
     input_parser = ArgumentParser()
-    input_parser.add_argument("--prompt", type=str, default="This is a test prompt, hello!", help="Prompt to generate audio from")
+    input_parser.add_argument("--prompt", type=str, default="Hello! how are you?", help="Prompt to generate audio from")
     args = input_parser.parse_args()
     
     formatted_prompt = args.prompt.replace("\n", " ").strip()
