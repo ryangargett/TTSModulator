@@ -1,0 +1,1 @@
+VOICE_PRESET = "v2/en_speaker_6"
