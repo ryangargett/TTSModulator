@@ -68,7 +68,6 @@ def generate(prompt):
         audio = generate_audio(prompt, history_prompt=cfg.VOICE_PRESET)
     
     processed_audio = process_audio(audio)
-    
     write("output/generated.wav", SAMPLE_RATE, processed_audio)
 
 if __name__ == "__main__":
