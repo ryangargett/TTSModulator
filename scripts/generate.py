@@ -1,11 +1,29 @@
+##################################################
+#File: generate.py                               #
+#Project: AdaptiveLLM                            #
+#Created Date: Tue Jan 23 2024                   #
+#Author: Ryan Gargett                            #
+#-----                                           #
+#Last Modified: Tue Jan 23 2024                  #
+#Modified By: Ryan Gargett                       #
+##################################################
+
 from bark import SAMPLE_RATE, generate_audio
+from bark.generation import generate_text_semantic
+from bark.api import semantic_to_waveform
+
 from scipy.io.wavfile import write 
 from pedalboard import Pedalboard, Compressor, LowShelfFilter, NoiseGate
 import numpy as np
 import noisereduce as nr
 from argparse import ArgumentParser
+import nltk
 
 import utils.config as cfg
+
+def _get_sentences(prompt):
+    pass
+    
 
 def process_audio(audio):
     
@@ -32,4 +50,5 @@ if __name__ == "__main__":
     input_parser.add_argument("--prompt", type=str, default="This is a test prompt, hello!", help="Prompt to generate audio from")
     args = input_parser.parse_args()
     
-    generate(args.prompt)
+    formatted_prompt = args.prompt.replace("\n", " ").strip()
+    generate(formatted_prompt)
